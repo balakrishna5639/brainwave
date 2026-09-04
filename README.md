@@ -152,10 +152,30 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
+## 🌐 Live Cloud Deployment
+
+The application is deployed live in production:
+
+- **Frontend (Vercel)**: Connects dynamically via `VITE_API_URL` with SPA client-side rewrites enabled.
+- **Backend API (Render)**: [https://brainwave-backend-i5io.onrender.com](https://brainwave-backend-i5io.onrender.com)
+- **Live Health & System Status**: [https://brainwave-backend-i5io.onrender.com/api/health](https://brainwave-backend-i5io.onrender.com/api/health)
+- **Production Database**: Render Managed PostgreSQL 16 instance.
+
+---
+
 ## 🧪 Running Automated Security & RBAC Tests
 
-The repository includes a dedicated test suite verifying backend authorization barriers, role isolation, and audit log generation:
+The repository includes both a fast RBAC security test suite and a comprehensive 20-point pre-deployment audit suite:
 
+### 1. Comprehensive 20-Point Pre-Deployment Audit (Recommended)
+Validates all assignment criteria including auth validation errors, malformed/expired JWTs, all 5 role cross-access boundaries (200 vs 403), dynamic role reassignment, user deactivation, user deletion cascade, audit log persistence, and secrets leakage protection:
+
+```bash
+npm run test:audit
+```
+*(All 19/19 test assertions pass with 100% success)*.
+
+### 2. Core RBAC Security Suite
 ```bash
 npm test
 ```
@@ -163,14 +183,17 @@ npm test
 ### Verified Test Assertions:
 1. `401 Unauthorized` for unauthenticated requests.
 2. `401 Unauthorized` for tampered/invalid JWT tokens.
-3. `200 OK` for HR user accessing Zoho People proxy.
-4. **`403 Forbidden`** when HR user attempts to access Zoho CRM (`access:zoho_crm` denied).
-5. **Audit verification**: Automatic creation of `UNAUTHORIZED_ACCESS` record for HR CRM attempt.
-6. `200 OK` for Sales user accessing Zoho CRM proxy.
-7. **`403 Forbidden`** when Sales user attempts to access Zoho Books (`access:zoho_books` denied).
-8. `200 OK` for Admin accessing all 4 Zoho proxies simultaneously.
-9. `200 OK` for Admin accessing user management and audit logs.
-10. **`403 Forbidden`** for non-admin users attempting to access `/api/admin/users`.
+3. `401 Unauthorized` for expired JWT tokens.
+4. `200 OK` for HR user accessing Zoho People proxy.
+5. **`403 Forbidden`** when HR user attempts to access Zoho CRM (`access:zoho_crm` denied).
+6. **Audit verification**: Automatic creation of `UNAUTHORIZED_ACCESS` record for HR CRM attempt with full IP and user context.
+7. `200 OK` for Sales user accessing Zoho CRM proxy.
+8. **`403 Forbidden`** when Sales user attempts to access Zoho Books (`access:zoho_books` denied).
+9. `200 OK` for Admin accessing all 4 Zoho proxies simultaneously.
+10. `200 OK` for Admin accessing user management and audit logs.
+11. **`403 Forbidden`** for non-admin users attempting to access `/api/admin/users`.
+12. **Safe Admin Controls**: Logged-in admin account is badged as `(You)` and protected against accidental self-deletion.
+13. **Zero Secrets Leakage**: Confirms backend responses never leak client secrets or refresh tokens.
 
 ---
 

@@ -56,14 +56,17 @@
   1. Switch back to browser. Log in as `admin@brainwave.com`.
   2. Show that Admin has access to all 4 Zoho applications (People, CRM, Desk, Books).
   3. Click **Admin Management** in the navbar.
-  4. Show **User Management** tab (view users, click Edit or Add).
+  4. Show **User Management** tab:
+     - Point out the current admin user row labeled with a clear **(You)** badge.
+     - Hover over the disabled delete button: explain that self-deletion is blocked to prevent accidental administrative lockout.
+     - Show the deletion confirmation modal and instant feedback alerts when managing team accounts.
   5. Click **Roles & Permissions Matrix** tab (show the 6-table relational RBAC model).
   6. Click **Audit Logs** tab (point out `LOGIN_SUCCESS`, `ZOHO_ACCESS`, and the `UNAUTHORIZED_ACCESS` entry logged during the HR CRM attempt).
   7. Click **Zoho OAuth Diagnostics** tab (show token health and TTL).
 - **Narrator**:
   > *"Logging in as Admin reveals full access across all 4 Zoho products plus the Admin Control Center.
   >
-  > Here, administrators can create new users, reassign RBAC roles, and inspect our permission matrix.
+  > Here, administrators can create new users, reassign RBAC roles, and inspect our permission matrix. Notice the safety controls: the logged-in administrator is clearly marked with a 'You' badge and self-deletion is prevented so the portal can never be left without an admin. Deletion of any other account requires explicit modal confirmation and cascades safely across relational junction tables.
   >
   > In the Audit Logs tab, every critical security event is tracked in PostgreSQL—including successful logins, user modifications, Zoho proxy requests, and the exact unauthorized attempt we tested moments ago with timestamp, resource, and IP address.
   >
@@ -71,14 +74,20 @@
 
 ---
 
-### [3:45 – 4:15] 5. Automated Security Test Suite & Conclusion
-- **Visual**: Open terminal and run `npm test` in the root directory (or `node tests/rbac.test.js` in backend). Show all 13 test cases passing with 100% green checks.
+### [3:45 – 4:30] 5. Automated Security Test Suite, Live Cloud Deployment & Conclusion
+- **Visual**: 
+  1. Open terminal and run:
+     ```bash
+     npm run test:audit
+     ```
+  2. Show all 19 comprehensive test cases passing with 100% green checks (auth validation, cross-role 403 barriers, session expiry, and zero secrets leakage).
+  3. Show the live cloud deployment URLs (Backend on Render with managed PostgreSQL, Frontend on Vercel).
 - **Narrator**:
-  > *"Finally, we validate our implementation with an automated security test suite that covers unauthenticated calls, tampered tokens, cross-role isolation, and audit log persistence.
+  > *"Finally, we validate our implementation with our comprehensive automated test suite. Running `npm run test:audit` verifies all 19 pre-deployment assertions—from input validation and expired token rejections to strict cross-role 403 barriers and zero credentials leakage. All 19 tests pass with 100% success.
   >
-  > All 13 tests pass with 100% success.
+  > The portal is fully deployed live in production: our Node.js backend and managed PostgreSQL database are hosted on Render, and our React frontend is hosted on Vercel with real-time Zoho OAuth2 integration.
   >
-  > The repository is fully documented with a Docker Compose PostgreSQL environment, migration and seed scripts, and a complete Zoho Developer Console setup guide.
+  > The repository includes complete documentation, database migrations, and a comprehensive setup guide.
   >
   > Thank you for your time!"*
 
