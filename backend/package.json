@@ -1,0 +1,24 @@
+{
+  "name": "custom-employee-portal-backend",
+  "version": "1.0.0",
+  "description": "Backend for Custom Employee Portal with RBAC and Zoho One Integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate": "node src/scripts/migrate.js",
+    "seed": "node src/scripts/seed.js",
+    "test:rbac": "node tests/rbac.test.js"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.2.14",
+    "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "pg": "^8.13.1"
+  }
+}

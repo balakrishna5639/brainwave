@@ -1,0 +1,15 @@
+{
+  "name": "brainwave-custom-employee-portal",
+  "version": "1.0.0",
+  "description": "Custom Employee Portal with Role-Based Access Control and Zoho One Integration",
+  "scripts": {
+    "migrate": "npm --prefix backend run migrate",
+    "seed": "npm --prefix backend run seed",
+    "test": "npm --prefix backend run test:rbac",
+    "test:audit": "node backend/tests/full_audit_suite.test.js",
+    "backend": "npm --prefix backend run dev",
+    "frontend": "npm --prefix frontend run dev"
+  },
+  "author": "BrainWave Engineering",
+  "license": "ISC"
+}
