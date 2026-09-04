@@ -8,9 +8,11 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const env = require('../src/config/env');
 const { app } = require('../server');
+const { initDB } = require('../src/config/db');
 
 let server;
 let baseUrl;
+let startedOwnServer = false;
 
 async function runComprehensiveAudit() {
   console.log('\n======================================================');
@@ -18,6 +20,20 @@ async function runComprehensiveAudit() {
   console.log('======================================================\n');
 
   baseUrl = `http://localhost:${env.PORT || 5000}`;
+
+  // Check if an external or local server is already running
+  try {
+    await axios.get(`${baseUrl}/api/health`, { timeout: 1000 });
+    console.log(`[Test Runner] Connected to running server at ${baseUrl}\n`);
+  } catch (err) {
+    console.log('[Test Runner] Active server not detected. Starting test instance automatically...');
+    await initDB();
+    server = app.listen(0);
+    const port = server.address().port;
+    baseUrl = `http://localhost:${port}`;
+    startedOwnServer = true;
+    console.log(`[Test Runner] Test server listening on ${baseUrl}\n`);
+  }
 
   let passed = 0;
   let total = 0;
@@ -381,6 +397,9 @@ async function runComprehensiveAudit() {
     });
 
   } finally {
+    if (startedOwnServer && server && server.close) {
+      server.close();
+    }
     console.log('\n======================================================');
     console.log(`📊 Comprehensive Audit Results: ${passed}/${total} Passed (${Math.round((passed/total)*100)}%)`);
     console.log('======================================================\n');
